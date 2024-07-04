@@ -152,9 +152,7 @@ def data_loader(pathway,node_type):
                             neighbor_list_news=news_n_neigh[i], neighbor_list_post=news_p_neigh[i],
                             neighbor_list_user=news_u_neigh[i], label=news_label[i])
             news_node.append(node)
-        # padding_node = Het_Node(node_type="news", node_id=padding_id, embed=padding_embed,
-        # neighbor_list_news=padding_news_n_neigh, neighbor_list_post=padding_news_p_neigh, neighbor_list_user=padding_news_u_neigh)
-        return news_node  # , padding_node
+        return news_node
 
     elif node_type == 'post':
         post_node = []
@@ -180,8 +178,7 @@ def data_loader(pathway,node_type):
         for i in range(len(post_id)):
             node = Het_Node(node_type="post", node_id=post_id[i], embed=post_embed[i])
             post_node.append(node)
-        # padding_node = Het_Node(node_type='post', node_id=padding_id, embed=padding_embed)
-        return post_node  # , padding_node
+        return post_node
 
     else:
         user_node = []
@@ -207,8 +204,7 @@ def data_loader(pathway,node_type):
         for i in range(len(user_id)):
             node = Het_Node(node_type="user", node_id=user_id[i], embed=user_embed[i])
             user_node.append(node)
-        # padding_node = Het_Node(node_type='user', node_id=padding_id, embed=padding_embed)
-        return user_node  # , padding_node
+        return user_node
 post_nodes = data_loader(pathway='../../data/processed_data/FakeNewsNet/GossipCop/fnn_gossipcop_50/normalized_post_nodes/', node_type="post")
 user_nodes = data_loader(pathway='../../data/processed_data/FakeNewsNet/GossipCop/fnn_gossipcop_50/normalized_user_nodes/', node_type="user")
 news_nodes = data_loader(pathway='../../data/processed_data/FakeNewsNet/GossipCop/fnn_gossipcop_50/normalized_news_nodes/', node_type="news")
@@ -476,17 +472,14 @@ class DPSG(nn.Module):
         self.n_init_linear = nn.Linear(self.n_input_dim, self.n_hidden_dim)
         self.n_attention = nn.MultiheadAttention(self.n_hidden_dim, self_attn_heads, dropout=0.2)
         self.n_linear = nn.Linear(self.n_hidden_dim, self.n_output_dim)
-        self.n_dropout = nn.Dropout(p=0.5)
 
         self.u_init_linear = nn.Linear(self.u_input_dim, self.u_hidden_dim)
         self.u_attention = nn.MultiheadAttention(self.u_hidden_dim, self_attn_heads, dropout=0.2)
         self.u_linear = nn.Linear(self.u_hidden_dim, self.u_output_dim)
-        self.u_dropout = nn.Dropout(p=0.5)
 
         self.p_init_linear = nn.Linear(self.p_input_dim, self.p_hidden_dim)
         self.p_attention = nn.MultiheadAttention(self.p_hidden_dim, self_attn_heads, dropout=0.2)
         self.p_linear = nn.Linear(self.p_hidden_dim, self.p_output_dim)
-        self.p_dropout = nn.Dropout(p=0.5)
         self.act = nn.LeakyReLU()
         self.relu = nn.ReLU()
         self.softmax = nn.Softmax(dim=1)

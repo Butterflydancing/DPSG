@@ -204,23 +204,19 @@ for node in news_nodes:
 ratio = len(news_nodes_real) / len(news_nodes_fake)
 
 class PositionalEncoding(nn.Module):
-    # 用于为序列添加位置编码，位置编码通常用于注意力机制，帮助模型捕捉输入序列中元素的相对位置信息
     def __init__(self, d_model, dropout=0.1, max_len=5000):
         super(PositionalEncoding, self).__init__()
         self.dropout = nn.Dropout(p=dropout)
-        # 创建位置编码矩阵
         pe = torch.zeros(max_len, d_model)
-        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)  # 生成等差序列，表示序列的位置
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
-        pe[:, 0::2] = torch.sin(position * div_term)#所有行，偶数列
-        pe[:, 1::2] = torch.cos(position * div_term)#所有行，奇数列
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0).transpose(0, 1)
-        self.register_buffer('pe', pe)  # 将编码矩阵注册为模型的缓冲区，使其在模型的状态字典中可见但不会被优化
+        self.register_buffer('pe', pe)
 
     def forward(self, x):
-        # print(x.shape)
-        # print(self.pe[:x.size(0), :].shape)
-        x = x + self.pe[:x.size(0), :]  # 在输入序列的每个位置上加上位置编码
+        x = x + self.pe[:x.size(0), :]
         return self.dropout(x)
 
 class GraphAttentionLayer(nn.Module):
@@ -271,7 +267,7 @@ class Signed_GAT(nn.Module):
         self.alpha = alpha
 
     def forward(self,node_embedding,cosmatrix,original_adj, X_tid):
-        embedding_dim = node_embedding.shape[1]  # H
+        embedding_dim = node_embedding.shape[1]
         node_num = original_adj.shape[0]
 
         user_tweet_embedding = nn.Embedding(num_embeddings=node_num, embedding_dim=embedding_dim, padding_idx=0).to(
@@ -392,7 +388,6 @@ class TransformerBlock(nn.Module):
 
 
 class DPSG(nn.Module):
-    # features: list of HetNode class
     def __init__(self, input_dim,n_hidden_dim,u_hidden_dim,p_hidden_dim,
                  out_embed_d, outemb_d=1, n_num_layers=1, u_num_layers=1,
                  p_num_layers=1, num_layers=1,content_dict={},
@@ -426,7 +421,6 @@ class DPSG(nn.Module):
         self.init_linear_other_p = nn.Linear(self.input_dim[2], self.hidden_dim)
         self.init_linear_other_user = nn.Linear(self.input_dim[3], self.hidden_dim)
 
-        # Define the attention layer
         self.news_title_attention_text = nn.MultiheadAttention(self.hidden_dim, attn_heads, dropout=0.2)
         self.news_content_attention_text = nn.MultiheadAttention(self.hidden_dim, attn_heads, dropout=0.2)
         self.post_content_attention_text = nn.MultiheadAttention(self.hidden_dim, attn_heads, dropout=0.2)
@@ -441,11 +435,6 @@ class DPSG(nn.Module):
         self.layernorm4 = nn.LayerNorm([1, out_embed_d])
         self.layernorm5 = nn.LayerNorm([1, out_embed_d])
         self.layernorm6 = nn.LayerNorm([1, out_embed_d])
-        self.n_dropout = nn.Dropout(p=0.5)
-
-        self.u_dropout = nn.Dropout(p=0.5)
-
-        self.p_dropout = nn.Dropout(p=0.5)
 
         self.act = nn.LeakyReLU()
         self.relu = nn.ReLU()
