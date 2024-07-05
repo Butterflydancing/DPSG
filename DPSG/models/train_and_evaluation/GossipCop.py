@@ -929,12 +929,12 @@ def load_train_test(data_real, data_fake, PATH):
 
 
 # Initialize parameters
-lr=0.001
+lr=0.01
 num_epoch = 40
 num_folds = 9
-batch_size = 4
+batch_size = 16
 output_dim=208
-hidden_dim=200
+hidden_dim=128
 epsilon=1e-10
 alp=2.5
 belt=1.4
