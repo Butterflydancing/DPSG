@@ -28,7 +28,7 @@ The zipped file is only 25M and can be downloaded in around 3 minutes.
 ## 2. Data Pre-processing
 Data pre-processing includes image fetching, image encoding, text encoding, graph construction, and the extraction of other features.
 
-We also provide a processed version of the three datasets via this [Google Drive link](https://drive.google.com/drive/my-drive).
+We also provide a processed version of the three datasets via this [Google Drive link](https://drive.google.com/drive/folders/118YqbFodriKwQ5LUCiQT5mObIxsOrZZD?usp=drive_link).
 
 You can download them and place them under `data/processed_data/FakeNewsNet/GossipCop/`, `data/processed_data/FakeNewsNet/PolitiFact/` and `data/processed_data/PHEME/` respectively in align with the data paths described in training_and_evaluation scripts.
 
